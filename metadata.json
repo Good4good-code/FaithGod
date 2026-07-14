@@ -1,0 +1,8 @@
+{
+  "name": "FaithGod",
+  "description": "An elegant and comprehensive Bible companion app featuring daily verses, interactive quizzes, reading plans, an AI-powered study assistant, prayer journal, favorites, and settings.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
