@@ -103,7 +103,7 @@ export default function BibleDictionaryView() {
       {/* Sidebar glossary list */}
       <div className="bg-white border border-[#e7e5e4] rounded-2xl p-4 flex flex-col h-[300px] lg:h-full overflow-hidden shadow-sm">
         <h3 className="font-semibold text-stone-800 flex items-center gap-2 mb-3">
-          <BookOpen className="w-5 h-5 text-[#854d0e]" />
+          <BookOpen className="w-5 h-5 text-[#d4af37]" />
           <span>Theological Glossary</span>
         </h3>
 
@@ -129,7 +129,7 @@ export default function BibleDictionaryView() {
               onClick={() => handleOfflineSelect(term)}
               className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all flex justify-between items-center ${
                 selectedTerm?.word === term.word
-                  ? 'bg-[#fefce8] text-[#854d0e] font-medium border border-[#fef08a]'
+                  ? 'bg-[#0f172a]/10 text-[#0f172a] font-semibold border border-slate-200'
                   : 'text-stone-600 hover:bg-stone-50'
               }`}
             >
@@ -151,8 +151,8 @@ export default function BibleDictionaryView() {
           {/* Default view */}
           {!selectedTerm && !customWord && !loading && (
             <div className="flex flex-col items-center justify-center text-center py-20 text-stone-400 gap-4 max-w-sm mx-auto h-full">
-              <div className="w-12 h-12 rounded-full bg-[#fefce8] flex items-center justify-center text-[#854d0e]">
-                <BookOpen className="w-6 h-6" />
+              <div className="w-12 h-12 rounded-full bg-[#0f172a]/10 flex items-center justify-center text-[#0f172a]">
+                <BookOpen className="w-6 h-6 text-[#d4af37]" />
               </div>
               <h3 className="text-lg font-serif font-semibold text-stone-700">Biblical Knowledge Dictionary</h3>
               <p className="text-xs leading-relaxed">
@@ -164,7 +164,7 @@ export default function BibleDictionaryView() {
           {/* Loading */}
           {loading && (
             <div className="flex flex-col items-center justify-center text-center py-24 text-stone-400 gap-3 h-full">
-              <Sparkles className="w-10 h-10 text-amber-600 animate-spin" />
+              <Sparkles className="w-10 h-10 text-[#d4af37] animate-spin" />
               <h4 className="font-serif font-medium text-stone-700">Searching Scriptures & Historical Logs...</h4>
               <p className="text-xs max-w-xs leading-relaxed">
                 Gemini is researching Hebrew/Greek roots, archaeological details, and biblical instances for <span className="font-bold text-stone-600">"{customWord}"</span>.
@@ -177,7 +177,7 @@ export default function BibleDictionaryView() {
             <div className="space-y-6 animate-fadeIn">
               <div className="border-b border-stone-200 pb-4">
                 <h2 className="text-3xl font-bold text-stone-800 font-serif">{selectedTerm.word}</h2>
-                <span className="text-sm text-[#854d0e] font-semibold italic bg-amber-50 px-2.5 py-1 rounded-md mt-1 inline-block">
+                <span className="text-sm text-[#0f172a] font-semibold italic bg-[#0f172a]/5 px-2.5 py-1 rounded-md mt-1 inline-block">
                   {selectedTerm.original}
                 </span>
               </div>
@@ -203,7 +203,7 @@ export default function BibleDictionaryView() {
                     {selectedTerm.references.map((ref, idx) => (
                       <span
                         key={idx}
-                        className="text-xs font-semibold text-[#854d0e] bg-[#fefce8] border border-[#fef08a] px-3 py-1 rounded-lg"
+                        className="text-xs font-semibold text-[#0f172a] bg-slate-100 border border-slate-200 px-3 py-1 rounded-lg"
                       >
                         {ref}
                       </span>
@@ -225,7 +225,7 @@ export default function BibleDictionaryView() {
                 <button
                   id="btn-re-lookup"
                   onClick={() => handleAiLookup(customWord)}
-                  className="text-xs font-semibold text-[#854d0e] hover:bg-[#fefce8] border border-[#fef08a] px-3 py-1.5 rounded-lg flex items-center gap-1"
+                  className="text-xs font-semibold text-[#0f172a] hover:bg-[#0f172a]/5 border border-slate-200 px-3 py-1.5 rounded-lg flex items-center gap-1"
                 >
                   <Sparkles className="w-3.5 h-3.5" />
                   <span>Refresh Lookup</span>

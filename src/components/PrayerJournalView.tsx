@@ -86,7 +86,7 @@ export default function PrayerJournalView({
         <button
           id="btn-new-prayer"
           onClick={() => setShowForm(!showForm)}
-          className="px-4 py-2 bg-[#854d0e] hover:bg-[#a16207] text-white text-sm font-semibold rounded-xl flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
+          className="px-4 py-2 bg-[#0f172a] hover:bg-slate-800 text-[#d4af37] text-sm font-semibold rounded-xl flex items-center gap-1.5 shadow-sm transition-all cursor-pointer border border-[#d4af37]/20"
         >
           <Plus className="w-4 h-4" />
           <span>New Prayer Entry</span>
@@ -134,7 +134,7 @@ export default function PrayerJournalView({
             <button
               id="btn-submit-prayer"
               type="submit"
-              className="px-4 py-2 bg-gradient-to-r from-amber-800 to-amber-700 hover:from-amber-700 hover:to-amber-600 text-white text-sm font-semibold rounded-xl"
+              className="px-4 py-2 bg-[#0f172a] hover:bg-slate-800 text-[#d4af37] border border-[#d4af37]/20 text-sm font-semibold rounded-xl"
             >
               Add Entry
             </button>
@@ -152,13 +152,13 @@ export default function PrayerJournalView({
               onClick={() => setActiveTab(tab)}
               className={`pb-2 text-sm font-semibold capitalize relative transition-all cursor-pointer ${
                 activeTab === tab
-                  ? 'text-[#854d0e]'
+                  ? 'text-[#0f172a]'
                   : 'text-stone-400 hover:text-stone-600'
               }`}
             >
               <span>{tab === 'active' ? 'Active Requests' : tab === 'answered' ? 'Answered Prayers' : 'All Requests'}</span>
               {activeTab === tab && (
-                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#854d0e] rounded-full" />
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#0f172a] rounded-full" />
               )}
             </button>
           ))}
@@ -266,8 +266,8 @@ export default function PrayerJournalView({
               {!item.answered && (
                 <div className="mt-4 pl-8">
                   {encouragements[item.id] ? (
-                    <div className="bg-amber-50/50 border border-amber-100/60 p-3.5 rounded-xl text-xs text-stone-600 leading-relaxed flex items-start gap-2 animate-fadeIn font-serif">
-                      <Sparkles className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                    <div className="bg-slate-50 border border-slate-200/60 p-3.5 rounded-xl text-xs text-stone-600 leading-relaxed flex items-start gap-2 animate-fadeIn font-serif">
+                      <Sparkles className="w-4 h-4 text-[#d4af37] shrink-0 mt-0.5" />
                       <span>{encouragements[item.id]}</span>
                     </div>
                   ) : (
@@ -275,9 +275,9 @@ export default function PrayerJournalView({
                       id={`btn-ai-comfort-${item.id}`}
                       onClick={() => handleGetEncouragement(item)}
                       disabled={loadingEncouragement === item.id}
-                      className="text-xs font-semibold text-[#854d0e] hover:text-[#a16207] flex items-center gap-1 disabled:opacity-50 transition-colors cursor-pointer bg-transparent border-0"
+                      className="text-xs font-semibold text-[#d4af37] hover:text-[#0f172a] flex items-center gap-1 disabled:opacity-50 transition-colors cursor-pointer bg-transparent border-0"
                     >
-                      <Sparkles className="w-3.5 h-3.5" />
+                      <Sparkles className="w-3.5 h-3.5 text-[#d4af37]" />
                       <span>{loadingEncouragement === item.id ? 'Reflecting on scripture...' : 'Receive AI Scripture Encouragement'}</span>
                     </button>
                   )}

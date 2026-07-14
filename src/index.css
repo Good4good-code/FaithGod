@@ -18,3 +18,115 @@
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(120, 113, 108, 0.4);
 }
+
+/* Premium Dark Mode Theme Overrides */
+#faithgod-app-container.dark {
+  background-color: #0b0f19 !important;
+  color: #f1f5f9 !important;
+}
+
+#faithgod-app-container.dark header {
+  background-color: #0b0f19 !important;
+  border-color: #1e293b !important;
+}
+
+#faithgod-app-container.dark header span, 
+#faithgod-app-container.dark header svg {
+  color: #94a3b8 !important;
+}
+
+#faithgod-app-container.dark header button {
+  background-color: #1e293b !important;
+  color: #f1f5f9 !important;
+}
+
+#faithgod-app-container.dark header button:hover {
+  background-color: #334155 !important;
+}
+
+#faithgod-app-container.dark aside {
+  border-color: #1e293b !important;
+}
+
+#faithgod-app-container.dark main {
+  background-color: #0b0f19 !important;
+}
+
+#faithgod-app-container.dark .bg-white {
+  background-color: #0f172a !important;
+  border-color: #1e293b !important;
+  color: #f1f5f9 !important;
+}
+
+#faithgod-app-container.dark .text-stone-800, 
+#faithgod-app-container.dark .text-slate-800,
+#faithgod-app-container.dark .text-stone-700,
+#faithgod-app-container.dark .text-slate-700 {
+  color: #f1f5f9 !important;
+}
+
+#faithgod-app-container.dark .text-stone-600, 
+#faithgod-app-container.dark .text-slate-600 {
+  color: #cbd5e1 !important;
+}
+
+#faithgod-app-container.dark .text-stone-500, 
+#faithgod-app-container.dark .text-slate-500,
+#faithgod-app-container.dark .text-stone-400,
+#faithgod-app-container.dark .text-slate-400 {
+  color: #94a3b8 !important;
+}
+
+#faithgod-app-container.dark .bg-slate-50, 
+#faithgod-app-container.dark .bg-[#fafaf9], 
+#faithgod-app-container.dark .bg-[#fefce8]/40, 
+#faithgod-app-container.dark .bg-[#fefce8]/30, 
+#faithgod-app-container.dark .bg-slate-50/50,
+#faithgod-app-container.dark .bg-[#fafaf9]/50,
+#faithgod-app-container.dark .bg-stone-50 {
+  background-color: #131b2e !important;
+  border-color: #1e293b !important;
+  color: #f1f5f9 !important;
+}
+
+#faithgod-app-container.dark input, 
+#faithgod-app-container.dark select, 
+#faithgod-app-container.dark textarea {
+  background-color: #131b2e !important;
+  color: #f1f5f9 !important;
+  border-color: #1e293b !important;
+}
+
+#faithgod-app-container.dark input::placeholder {
+  color: #64748b !important;
+}
+
+#faithgod-app-container.dark .border-stone-200, 
+#faithgod-app-container.dark .border-slate-200, 
+#faithgod-app-container.dark .border-[#e7e5e4], 
+#faithgod-app-container.dark .border-[#e2e8f0],
+#faithgod-app-container.dark .border-stone-100,
+#faithgod-app-container.dark .border-slate-100 {
+  border-color: #1e293b !important;
+}
+
+#faithgod-app-container.dark .hover:bg-stone-50:hover, 
+#faithgod-app-container.dark .hover:bg-slate-50:hover {
+  background-color: #1e293b !important;
+}
+
+/* Specific elements adjustments */
+#faithgod-app-container.dark .prose-slate,
+#faithgod-app-container.dark .prose-stone {
+  color: #cbd5e1 !important;
+}
+
+#faithgod-app-container.dark .prose-slate strong,
+#faithgod-app-container.dark .prose-stone strong {
+  color: #f1f5f9 !important;
+}
+
+/* Study assistant drawer */
+#faithgod-app-container.dark .fixed.inset-0.bg-\[\#0f172a\]\/40 {
+  background-color: rgba(11, 15, 25, 0.7) !important;
+}

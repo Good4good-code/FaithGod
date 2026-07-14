@@ -40,10 +40,10 @@ export default function ReadingPlansView({
 
       {/* Active Reading Plan Section */}
       {activePlan ? (
-        <div className="bg-gradient-to-br from-[#fcfbf9] to-[#fefce8]/30 border border-amber-200/60 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+        <div className="bg-slate-50 border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
           <div className="flex justify-between items-start flex-wrap gap-4">
             <div className="space-y-1">
-              <span className="text-xs font-bold uppercase tracking-widest text-[#854d0e] font-mono">Active Reading Plan</span>
+              <span className="text-xs font-bold uppercase tracking-widest text-[#0f172a] font-mono">Active Reading Plan</span>
               <h3 className="text-2xl font-bold text-stone-800 font-serif">{activePlan.title}</h3>
               <p className="text-sm text-stone-600 max-w-2xl">{activePlan.description}</p>
             </div>
@@ -63,14 +63,14 @@ export default function ReadingPlansView({
           <div className="space-y-2">
             <div className="flex justify-between items-center text-sm">
               <span className="font-semibold text-stone-700 flex items-center gap-1.5">
-                <Award className="w-4 h-4 text-[#854d0e]" />
+                <Award className="w-4 h-4 text-[#d4af37]" />
                 <span>Overall Progress</span>
               </span>
-              <span className="font-mono font-bold text-[#854d0e]">{calculateProgress(activePlan)}% Completed</span>
+              <span className="font-mono font-bold text-[#0f172a]">{calculateProgress(activePlan)}% Completed</span>
             </div>
             <div className="w-full bg-stone-200/60 h-2.5 rounded-full overflow-hidden">
               <div 
-                className="bg-[#854d0e] h-full rounded-full transition-all duration-500" 
+                className="bg-[#0f172a] h-full rounded-full transition-all duration-500" 
                 style={{ width: `${calculateProgress(activePlan)}%` }}
               />
             </div>
@@ -95,7 +95,7 @@ export default function ReadingPlansView({
                       id={`btn-complete-day-${day.day}`}
                       onClick={() => onCompleteDay(activePlan.id, day.day)}
                       className={`shrink-0 transition-colors cursor-pointer ${
-                        day.completed ? 'text-green-600' : 'text-stone-300 hover:text-[#854d0e]'
+                        day.completed ? 'text-green-600' : 'text-stone-300 hover:text-[#0f172a]'
                       }`}
                     >
                       {day.completed ? <CheckCircle2 className="w-5 h-5 fill-current" /> : <Circle className="w-5 h-5" />}
@@ -112,7 +112,7 @@ export default function ReadingPlansView({
                             id={`btn-nav-ref-${day.day}-${idx}`}
                             key={idx}
                             onClick={() => parseReferenceForNavigation(ref)}
-                            className="text-[11px] font-semibold text-[#854d0e] hover:underline bg-[#fefce8] border border-[#fef08a] px-2 py-0.5 rounded-md shrink-0 flex items-center gap-0.5"
+                            className="text-[11px] font-semibold text-[#0f172a] hover:text-[#d4af37] bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-md shrink-0 flex items-center gap-0.5"
                           >
                             <BookOpen className="w-2.5 h-2.5" />
                             <span>Read {ref}</span>
@@ -125,7 +125,7 @@ export default function ReadingPlansView({
                   {!day.completed && (
                     <button
                       onClick={() => parseReferenceForNavigation(day.references[0])}
-                      className="p-1 rounded-lg hover:bg-stone-100 text-stone-400 hover:text-[#854d0e] shrink-0"
+                      className="p-1 rounded-lg hover:bg-stone-100 text-stone-400 hover:text-[#0f172a] shrink-0"
                     >
                       <ArrowRight className="w-4 h-4" />
                     </button>
@@ -137,8 +137,8 @@ export default function ReadingPlansView({
         </div>
       ) : (
         /* Prompt to select a plan if none active */
-        <div className="bg-gradient-to-r from-[#854d0e]/5 to-amber-700/5 border border-stone-200 rounded-2xl p-6 text-center text-stone-600 font-serif text-sm">
-          💡 You don\'t have an active Bible reading plan right now. Choose one below to start your study journey!
+        <div className="bg-[#0f172a]/5 border border-slate-200 rounded-2xl p-6 text-center text-stone-600 font-serif text-sm">
+          💡 You don't have an active Bible reading plan right now. Choose one below to start your study journey!
         </div>
       )}
 
@@ -171,7 +171,7 @@ export default function ReadingPlansView({
               <button
                 id={`btn-start-plan-${plan.id}`}
                 onClick={() => onActivatePlan(plan.id)}
-                className="mt-6 w-full py-2 bg-stone-50 border border-stone-200 hover:bg-[#854d0e] hover:text-white text-stone-700 hover:border-[#854d0e] rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                className="mt-6 w-full py-2 bg-stone-50 border border-stone-200 hover:bg-[#0f172a] hover:text-[#d4af37] text-stone-700 hover:border-[#0f172a] rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
               >
                 <Play className="w-3.5 h-3.5" />
                 <span>Start Reading Plan</span>

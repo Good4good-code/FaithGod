@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Sliders, Book, Key, Check, Info, ShieldAlert, Sparkles, Smile } from 'lucide-react';
+import { Sliders, Book, Key, Check, Info, ShieldAlert, Sparkles, Smile, Sun, Moon } from 'lucide-react';
 
 interface SettingsViewProps {
   activeTranslation: string;
   onChangeTranslation: (trans: string) => void;
   hasApiKey: boolean;
+  theme: 'light' | 'dark';
+  onChangeTheme: (theme: 'light' | 'dark') => void;
 }
 
 const TRANSLATIONS = [
@@ -17,13 +19,66 @@ const TRANSLATIONS = [
 export default function SettingsView({
   activeTranslation,
   onChangeTranslation,
-  hasApiKey
+  hasApiKey,
+  theme,
+  onChangeTheme
 }: SettingsViewProps) {
   return (
     <div id="settings-view" className="max-w-3xl mx-auto space-y-6 py-4">
       <div>
         <h2 className="text-2xl font-bold text-stone-800 font-serif">Preferences & System Settings</h2>
         <p className="text-sm text-stone-500">Configure your study settings, active scripture translations, and secure AI credentials.</p>
+      </div>
+
+      {/* Theme Preference Card */}
+      <div className="bg-white border border-[#e7e5e4] rounded-2xl p-6 shadow-sm space-y-4">
+        <h3 className="font-bold font-serif text-lg text-stone-800 flex items-center gap-2">
+          <Sliders className="w-5 h-5 text-[#d4af37]" />
+          <span>App Interface Theme Preference</span>
+        </h3>
+        <p className="text-xs text-stone-500">Select your preferred app layout theme to customize your reading environment.</p>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <button
+            id="setting-theme-light"
+            onClick={() => onChangeTheme('light')}
+            className={`w-full text-left p-4 border rounded-xl transition-all flex items-start gap-3 ${
+              theme === 'light'
+                ? 'border-[#0f172a] bg-[#0f172a]/5 shadow-sm'
+                : 'border-stone-200 hover:bg-stone-50'
+            }`}
+          >
+            <div className={`p-2 rounded-lg shrink-0 mt-0.5 ${theme === 'light' ? 'bg-[#0f172a] text-[#d4af37]' : 'bg-stone-100 text-stone-500'}`}>
+              <Sun className="w-5 h-5" />
+            </div>
+            <div className="space-y-1">
+              <span className={`text-sm font-bold block ${theme === 'light' ? 'text-[#0f172a]' : 'text-stone-800'}`}>
+                Light Mode
+              </span>
+              <span className="text-xs text-stone-500 leading-relaxed block">Original Premium Navy Blue & Gold Theme</span>
+            </div>
+          </button>
+
+          <button
+            id="setting-theme-dark"
+            onClick={() => onChangeTheme('dark')}
+            className={`w-full text-left p-4 border rounded-xl transition-all flex items-start gap-3 ${
+              theme === 'dark'
+                ? 'border-[#d4af37] bg-slate-900 shadow-sm'
+                : 'border-stone-200 hover:bg-stone-50'
+            }`}
+          >
+            <div className={`p-2 rounded-lg shrink-0 mt-0.5 ${theme === 'dark' ? 'bg-[#d4af37] text-[#0f172a]' : 'bg-stone-100 text-stone-500'}`}>
+              <Moon className="w-5 h-5" />
+            </div>
+            <div className="space-y-1">
+              <span className={`text-sm font-bold block ${theme === 'dark' ? 'text-[#d4af37]' : 'text-stone-800'}`}>
+                Dark Mode
+              </span>
+              <span className="text-xs text-stone-500 leading-relaxed block">Premium Deep Ambient Devotional Theme</span>
+            </div>
+          </button>
+        </div>
       </div>
 
       {/* Translation Card */}

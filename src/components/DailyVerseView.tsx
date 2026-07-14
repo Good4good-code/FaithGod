@@ -102,10 +102,10 @@ export default function DailyVerseView({ onFavoriteVerse, isFavorited, onAskAssi
       {/* Date Header */}
       <div className="flex items-center justify-between text-stone-500">
         <div className="flex items-center gap-2">
-          <Calendar className="w-4 h-4 text-[#854d0e]" />
+          <Calendar className="w-4 h-4 text-[#d4af37]" />
           <span className="text-xs font-semibold uppercase tracking-widest font-mono">Verse of the Day • {verse.date}</span>
         </div>
-        <span className="text-xs bg-[#fefce8] text-[#854d0e] px-2.5 py-1 rounded-full border border-[#fef08a] font-medium">
+        <span className="text-xs bg-[#0f172a]/10 text-[#0f172a] px-2.5 py-1 rounded-full border border-slate-200 font-medium">
           {verse.theme}
         </span>
       </div>
@@ -153,9 +153,9 @@ export default function DailyVerseView({ onFavoriteVerse, isFavorited, onAskAssi
               id="btn-generate-devotional"
               onClick={handleGenerateReflection}
               disabled={loading}
-              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-800 to-amber-700 hover:from-amber-700 hover:to-amber-600 text-white text-sm font-semibold flex items-center gap-2 transition-all shadow-sm hover:shadow active:scale-95 disabled:opacity-50 cursor-pointer"
+              className="px-5 py-2.5 rounded-xl bg-[#0f172a] hover:bg-slate-800 text-[#d4af37] text-sm font-semibold flex items-center gap-2 transition-all shadow-sm hover:shadow active:scale-95 disabled:opacity-50 cursor-pointer border border-[#d4af37]/20"
             >
-              <Sparkles className="w-4 h-4" />
+              <Sparkles className="w-4 h-4 text-[#d4af37]" />
               <span>{loading ? 'Reflecting...' : 'Generate AI Devotional'}</span>
             </button>
           </div>
@@ -165,7 +165,7 @@ export default function DailyVerseView({ onFavoriteVerse, isFavorited, onAskAssi
       {/* Devotional Output */}
       {loading && (
         <div className="bg-white border border-stone-200 rounded-3xl p-8 text-center space-y-4 shadow-sm animate-pulse">
-          <Sparkles className="w-8 h-8 text-amber-600 animate-spin mx-auto" />
+          <Sparkles className="w-8 h-8 text-[#d4af37] animate-spin mx-auto" />
           <h3 className="text-lg font-serif font-medium text-stone-800">Writing Biblical Devotion...</h3>
           <p className="text-xs text-stone-400 max-w-sm mx-auto leading-relaxed">
             Gemini is reflecting on this scripture, analyzing theological themes, practical applications, and drafting a heartfelt prayer.
@@ -177,7 +177,7 @@ export default function DailyVerseView({ onFavoriteVerse, isFavorited, onAskAssi
         <div className="bg-[#fafaf9] border border-[#e7e5e4] rounded-3xl p-8 sm:p-10 shadow-sm space-y-8 animate-fadeIn">
           <div className="flex items-center justify-between border-b border-stone-200 pb-4">
             <h3 className="text-xl font-bold text-stone-800 font-serif flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-amber-600" />
+              <Sparkles className="w-5 h-5 text-[#d4af37]" />
               <span>Scripture Devotional Guide</span>
             </h3>
             <div className="flex gap-2">
@@ -202,7 +202,7 @@ export default function DailyVerseView({ onFavoriteVerse, isFavorited, onAskAssi
             <div className="space-y-6">
               {/* Reflection */}
               <div className="space-y-3">
-                <span className="text-xs font-bold uppercase tracking-widest text-[#854d0e] font-mono font-bold">Theological Reflection</span>
+                <span className="text-xs font-bold uppercase tracking-widest text-[#0f172a] font-mono font-bold">Theological Reflection</span>
                 <div className="prose prose-stone text-stone-700 leading-relaxed text-sm md:text-base font-serif whitespace-pre-line">
                   {parsedReflection.reflectionText}
                 </div>
@@ -211,11 +211,11 @@ export default function DailyVerseView({ onFavoriteVerse, isFavorited, onAskAssi
               {/* Life Application */}
               {parsedReflection.applications.length > 0 && (
                 <div className="bg-white border border-stone-100 p-6 rounded-2xl space-y-4">
-                  <span className="text-xs font-bold uppercase tracking-widest text-amber-800 font-mono font-bold">Daily Faith Application</span>
+                  <span className="text-xs font-bold uppercase tracking-widest text-[#0f172a] font-mono font-bold">Daily Faith Application</span>
                   <ul className="space-y-3">
                     {parsedReflection.applications.map((app, idx) => (
                       <li key={idx} className="flex items-start gap-3 text-sm text-stone-600">
-                        <span className="w-5 h-5 rounded-full bg-[#fefce8] text-[#854d0e] font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
+                        <span className="w-5 h-5 rounded-full bg-[#0f172a]/10 text-[#d4af37] font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
                           {idx + 1}
                         </span>
                         <span>{app}</span>
@@ -226,8 +226,8 @@ export default function DailyVerseView({ onFavoriteVerse, isFavorited, onAskAssi
               )}
 
               {/* Prayer */}
-              <div className="bg-[#fefce8]/40 border border-[#fef08a]/60 p-6 rounded-2xl space-y-3 italic">
-                <span className="text-xs font-bold uppercase tracking-widest text-[#854d0e] font-mono not-italic block">Heartfelt Prayer</span>
+              <div className="bg-slate-50 border border-slate-200/60 p-6 rounded-2xl space-y-3 italic">
+                <span className="text-xs font-bold uppercase tracking-widest text-[#0f172a] font-mono not-italic block">Heartfelt Prayer</span>
                 <p className="text-stone-700 leading-relaxed font-serif text-sm sm:text-base">
                   {parsedReflection.prayer}
                 </p>
@@ -244,7 +244,7 @@ export default function DailyVerseView({ onFavoriteVerse, isFavorited, onAskAssi
             <span>Generated on-demand using Gemini 3.5 Flash</span>
             <button
               onClick={() => onAskAssistant(`Regarding the daily verse ${verse.reference}: "${verse.verse}". I want to explore deeper. What other parts of scripture connect with this message, and what are some biblical cross-references?`)}
-              className="text-[#854d0e] hover:underline font-semibold bg-transparent border-none cursor-pointer"
+              className="text-[#d4af37] hover:text-[#0f172a] hover:underline font-semibold bg-transparent border-none cursor-pointer"
             >
               Discuss deeper with AI Chat
             </button>

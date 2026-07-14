@@ -3,6 +3,11 @@ import { FavoriteVerse, PrayerItem, ReadingPlan, DailyVerse } from './types';
 import { INITIAL_READING_PLANS } from './data/readingPlans';
 import { getTodayVerse } from './data/dailyVerses';
 
+// Firebase
+import { auth, db } from './lib/firebase';
+import { onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
+import { collection, query, where, getDocs, doc, setDoc, deleteDoc } from 'firebase/firestore';
+
 // Components
 import DailyVerseView from './components/DailyVerseView';
 import BibleReader from './components/BibleReader';
@@ -12,11 +17,12 @@ import ReadingPlansView from './components/ReadingPlansView';
 import BibleDictionaryView from './components/BibleDictionaryView';
 import BibleQuizView from './components/BibleQuizView';
 import SettingsView from './components/SettingsView';
+import ProfileView from './components/ProfileView';
 
 // Icons
 import { 
   Heart, BookOpen, Edit3, Bookmark, Award, Search, Trophy, Settings, 
-  Menu, X, Sparkles, MessageCircle, Send, Moon, Sun, ArrowRight, BookMarked
+  Menu, X, Sparkles, MessageCircle, Send, Moon, Sun, ArrowRight, BookMarked, User
 } from 'lucide-react';
 
 export default function App() {
@@ -27,6 +33,12 @@ export default function App() {
   // App settings state
   const [activeTranslation, setActiveTranslation] = useState<string>('NKJV');
   const [hasApiKey, setHasApiKey] = useState<boolean>(true); // default true, checked via fetch
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    return (localStorage.getItem('faithgod_theme') as 'light' | 'dark') || 'light';
+  });
+
+  // User auth state
+  const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null);
 
   // Local persistence states
   const [favorites, setFavorites] = useState<FavoriteVerse[]>([]);
@@ -39,31 +51,98 @@ export default function App() {
   const [chatHistory, setChatHistory] = useState<Array<{ role: 'user' | 'assistant', text: string }>>([]);
   const [chatLoading, setChatLoading] = useState(false);
 
-  // Load state on mount
+  // Sync state on Auth Change
   useEffect(() => {
-    // Favorites
-    const savedFavs = localStorage.getItem('faithgod_favs');
-    if (savedFavs) setFavorites(JSON.parse(savedFavs));
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      setCurrentUser(user);
+      if (user) {
+        // Fetch Favorites from Firestore
+        try {
+          const favsRef = collection(db, 'favorites');
+          const qFavs = query(favsRef, where('userId', '==', user.uid));
+          const favsSnap = await getDocs(qFavs);
+          const fbFavs: FavoriteVerse[] = [];
+          favsSnap.forEach((doc) => {
+            const data = doc.data();
+            fbFavs.push({
+              id: data.id,
+              bookId: data.bookId,
+              bookName: data.bookName,
+              chapter: data.chapter,
+              verse: data.verse,
+              text: data.text,
+              notes: data.notes || '',
+              dateAdded: data.dateAdded
+            });
+          });
+          
+          // Merge local-only ones to firestore if they don't exist
+          const localFavs = JSON.parse(localStorage.getItem('faithgod_favs') || '[]');
+          const mergedFavs = [...fbFavs];
 
-    // Prayers
-    const savedPrayers = localStorage.getItem('faithgod_prayers');
-    if (savedPrayers) {
-      setPrayers(JSON.parse(savedPrayers));
-    } else {
-      // Seed initial welcoming prayer
-      const seed: PrayerItem[] = [
-        {
-          id: 'welcome-prayer',
-          title: 'Welcome to FaithGod',
-          request: 'May this Bible companion strengthen my faith, guide my daily steps, and provide comfort through scripture.',
-          date: 'July 14',
-          answered: false
+          for (const local of localFavs) {
+            const exists = fbFavs.some(f => f.bookId === local.bookId && f.chapter === local.chapter && f.verse === local.verse);
+            if (!exists) {
+              const docId = `${user.uid}_${local.id}`;
+              await setDoc(doc(db, 'favorites', docId), { ...local, userId: user.uid });
+              mergedFavs.push(local);
+            }
+          }
+          setFavorites(mergedFavs);
+          localStorage.setItem('faithgod_favs', JSON.stringify(mergedFavs));
+        } catch (err) {
+          console.error("Error syncing favorites with Firestore:", err);
         }
-      ];
-      setPrayers(seed);
-      localStorage.setItem('faithgod_prayers', JSON.stringify(seed));
-    }
 
+        // Fetch Prayers from Firestore
+        try {
+          const prayersRef = collection(db, 'prayers');
+          const qPrayers = query(prayersRef, where('userId', '==', user.uid));
+          const prayersSnap = await getDocs(qPrayers);
+          const fbPrayers: PrayerItem[] = [];
+          prayersSnap.forEach((doc) => {
+            const data = doc.data();
+            fbPrayers.push({
+              id: data.id,
+              title: data.title,
+              request: data.request,
+              date: data.date,
+              answered: data.answered,
+              answerNote: data.answerNote || ''
+            });
+          });
+
+          // Merge local-only ones to firestore
+          const localPrayers = JSON.parse(localStorage.getItem('faithgod_prayers') || '[]');
+          const mergedPrayers = [...fbPrayers];
+          for (const local of localPrayers) {
+            const exists = fbPrayers.some(p => p.id === local.id);
+            if (!exists) {
+              await setDoc(doc(db, 'prayers', `${user.uid}_${local.id}`), { ...local, userId: user.uid });
+              mergedPrayers.push(local);
+            }
+          }
+          setPrayers(mergedPrayers);
+          localStorage.setItem('faithgod_prayers', JSON.stringify(mergedPrayers));
+        } catch (err) {
+          console.error("Error syncing prayers with Firestore:", err);
+        }
+      } else {
+        // If logged out, load from local storage only
+        const savedFavs = localStorage.getItem('faithgod_favs');
+        if (savedFavs) setFavorites(JSON.parse(savedFavs));
+        else setFavorites([]);
+
+        const savedPrayers = localStorage.getItem('faithgod_prayers');
+        if (savedPrayers) setPrayers(JSON.parse(savedPrayers));
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  // Load state on mount for static settings / plans
+  useEffect(() => {
     // Reading Plans
     const savedPlans = localStorage.getItem('faithgod_plans');
     if (savedPlans) {
@@ -108,7 +187,7 @@ export default function App() {
   };
 
   // Favorites Actions
-  const handleAddFavorite = (fav: Omit<FavoriteVerse, 'id' | 'dateAdded'>) => {
+  const handleAddFavorite = async (fav: Omit<FavoriteVerse, 'id' | 'dateAdded'>) => {
     const isDup = favorites.some(f => f.bookId === fav.bookId && f.chapter === fav.chapter && f.verse === fav.verse);
     if (isDup) return;
 
@@ -117,15 +196,35 @@ export default function App() {
       id: `${fav.bookId}-${fav.chapter}-${fav.verse}`,
       dateAdded: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
     };
-    saveFavorites([newFav, ...favorites]);
+    const updatedFavs = [newFav, ...favorites];
+    saveFavorites(updatedFavs);
+
+    if (currentUser) {
+      try {
+        const docId = `${currentUser.uid}_${newFav.id}`;
+        await setDoc(doc(db, 'favorites', docId), { ...newFav, userId: currentUser.uid });
+      } catch (err) {
+        console.error("Failed to persist favorite to firestore:", err);
+      }
+    }
   };
 
-  const handleRemoveFavorite = (bookId: string, chapter: number, verse: number) => {
+  const handleRemoveFavorite = async (bookId: string, chapter: number, verse: number) => {
     const filtered = favorites.filter(f => !(f.bookId === bookId && f.chapter === chapter && f.verse === verse));
     saveFavorites(filtered);
+
+    if (currentUser) {
+      try {
+        const favId = `${bookId}-${chapter}-${verse}`;
+        const docId = `${currentUser.uid}_${favId}`;
+        await deleteDoc(doc(db, 'favorites', docId));
+      } catch (err) {
+        console.error("Failed to delete favorite from firestore:", err);
+      }
+    }
   };
 
-  const handleUpdateNotes = (bookId: string, chapter: number, verse: number, notes: string) => {
+  const handleUpdateNotes = async (bookId: string, chapter: number, verse: number, notes: string) => {
     const updated = favorites.map(f => {
       if (f.bookId === bookId && f.chapter === chapter && f.verse === verse) {
         return { ...f, notes };
@@ -133,10 +232,23 @@ export default function App() {
       return f;
     });
     saveFavorites(updated);
+
+    if (currentUser) {
+      try {
+        const favId = `${bookId}-${chapter}-${verse}`;
+        const docId = `${currentUser.uid}_${favId}`;
+        const existingFav = favorites.find(f => f.bookId === bookId && f.chapter === chapter && f.verse === verse);
+        if (existingFav) {
+          await setDoc(doc(db, 'favorites', docId), { ...existingFav, notes, userId: currentUser.uid });
+        }
+      } catch (err) {
+        console.error("Failed to update favorite notes in firestore:", err);
+      }
+    }
   };
 
   // Prayers Actions
-  const handleAddPrayer = (title: string, request: string) => {
+  const handleAddPrayer = async (title: string, request: string) => {
     const newPrayer: PrayerItem = {
       id: `prayer-${Date.now()}`,
       title,
@@ -144,10 +256,20 @@ export default function App() {
       date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
       answered: false
     };
-    savePrayers([newPrayer, ...prayers]);
+    const updatedPrayers = [newPrayer, ...prayers];
+    savePrayers(updatedPrayers);
+
+    if (currentUser) {
+      try {
+        const docId = `${currentUser.uid}_${newPrayer.id}`;
+        await setDoc(doc(db, 'prayers', docId), { ...newPrayer, userId: currentUser.uid });
+      } catch (err) {
+        console.error("Failed to persist prayer to firestore:", err);
+      }
+    }
   };
 
-  const handleToggleAnswered = (id: string, note?: string) => {
+  const handleToggleAnswered = async (id: string, note?: string) => {
     const updated = prayers.map(p => {
       if (p.id === id) {
         return { 
@@ -159,10 +281,32 @@ export default function App() {
       return p;
     });
     savePrayers(updated);
+
+    if (currentUser) {
+      try {
+        const target = updated.find(p => p.id === id);
+        if (target) {
+          const docId = `${currentUser.uid}_${id}`;
+          await setDoc(doc(db, 'prayers', docId), { ...target, userId: currentUser.uid });
+        }
+      } catch (err) {
+        console.error("Failed to update prayer answered state in firestore:", err);
+      }
+    }
   };
 
-  const handleDeletePrayer = (id: string) => {
-    savePrayers(prayers.filter(p => p.id !== id));
+  const handleDeletePrayer = async (id: string) => {
+    const filtered = prayers.filter(p => p.id !== id);
+    savePrayers(filtered);
+
+    if (currentUser) {
+      try {
+        const docId = `${currentUser.uid}_${id}`;
+        await deleteDoc(doc(db, 'prayers', docId));
+      } catch (err) {
+        console.error("Failed to delete prayer from firestore:", err);
+      }
+    }
   };
 
   // Reading Plans Actions
@@ -227,6 +371,11 @@ export default function App() {
     localStorage.setItem('faithgod_trans', trans);
   };
 
+  const handleThemeChange = (newTheme: 'light' | 'dark') => {
+    setTheme(newTheme);
+    localStorage.setItem('faithgod_theme', newTheme);
+  };
+
   // Quick prompt triggering for Chat Drawer
   const handleAskAssistant = (prompt: string) => {
     setChatOpen(true);
@@ -273,6 +422,7 @@ export default function App() {
     { id: 'reading-plans', label: 'Reading Plans', icon: Award },
     { id: 'dictionary', label: 'Bible Dictionary', icon: Search },
     { id: 'quiz', label: 'Trivia Quizzes', icon: Trophy },
+    { id: 'profile', label: 'My Profile', icon: User },
     { id: 'settings', label: 'Settings', icon: Settings }
   ];
 
@@ -334,12 +484,21 @@ export default function App() {
         return <BibleDictionaryView />;
       case 'quiz':
         return <BibleQuizView />;
+      case 'profile':
+        return (
+          <ProfileView 
+            favoritesCount={favorites.length}
+            prayersCount={prayers.length}
+          />
+        );
       case 'settings':
         return (
           <SettingsView
             activeTranslation={activeTranslation}
             onChangeTranslation={handleTranslationChange}
             hasApiKey={hasApiKey}
+            theme={theme}
+            onChangeTheme={handleThemeChange}
           />
         );
       default:
@@ -348,25 +507,25 @@ export default function App() {
   };
 
   return (
-    <div id="faithgod-app-container" className="min-h-screen bg-[#faf9f6] flex flex-col lg:flex-row text-[#1c1917] font-sans antialiased animate-fadeIn">
+    <div id="faithgod-app-container" className={`min-h-screen bg-[#f8fafc] flex flex-col lg:flex-row text-[#0f172a] font-sans antialiased animate-fadeIn ${theme}`}>
       
       {/* Sidebar Navigation */}
-      <aside className="bg-white border-b lg:border-b-0 lg:border-r border-[#e7e5e4] w-full lg:w-64 shrink-0 flex flex-col justify-between lg:sticky lg:top-0 lg:h-screen z-30 shadow-sm lg:shadow-none">
+      <aside className="bg-[#0f172a] border-b lg:border-b-0 lg:border-r border-slate-800 w-full lg:w-64 shrink-0 flex flex-col justify-between lg:sticky lg:top-0 lg:h-screen z-30 shadow-md">
         <div>
           {/* Header Branding */}
-          <div className="px-6 py-5 border-b border-[#f5f5f4] flex justify-between items-center bg-stone-50/50">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-[#854d0e] flex items-center justify-center text-white shadow-sm animate-fadeIn">
+          <div className="px-6 py-5 border-b border-slate-800/80 flex justify-between items-center bg-slate-950/20">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg bg-[#d4af37] flex items-center justify-center text-[#0f172a] shadow-md animate-fadeIn">
                 <BookMarked className="w-4.5 h-4.5" />
               </div>
-              <span className="font-serif font-extrabold text-stone-800 tracking-tight text-xl">FaithGod</span>
+              <span className="font-serif font-extrabold text-[#d4af37] tracking-tight text-xl">FaithGod</span>
             </div>
 
             {/* Mobile Menu Toggle */}
             <button
               id="mobile-menu-toggle"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-1.5 text-stone-500 hover:text-stone-800 transition-colors"
+              className="lg:hidden p-1.5 text-slate-400 hover:text-white transition-colors"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -384,13 +543,13 @@ export default function App() {
                     setActiveTab(item.id);
                     setMobileMenuOpen(false);
                   }}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all cursor-pointer ${
+                  className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                     activeTab === item.id
-                      ? 'bg-[#fefce8] text-[#854d0e] border border-[#fef08a]/80 shadow-sm font-bold'
-                      : 'text-stone-500 hover:text-stone-800 hover:bg-stone-50'
+                      ? 'bg-slate-800 text-[#d4af37] border-l-4 border-[#d4af37] shadow-sm font-bold'
+                      : 'text-slate-400 hover:text-white hover:bg-slate-800/40'
                   }`}
                 >
-                  <Icon className={`w-4.5 h-4.5 ${activeTab === item.id ? 'text-[#854d0e]' : 'text-stone-400 group-hover:text-stone-600'}`} />
+                  <Icon className={`w-4.5 h-4.5 ${activeTab === item.id ? 'text-[#d4af37]' : 'text-slate-500'}`} />
                   <span>{item.label}</span>
                 </button>
               );
@@ -399,13 +558,13 @@ export default function App() {
         </div>
 
         {/* AI Assistant Quick Access Button (Sidebar Bottom) */}
-        <div className={`p-4 border-t border-[#f5f5f4] bg-stone-50/50 ${mobileMenuOpen ? 'block' : 'hidden lg:block'}`}>
+        <div className={`p-4 border-t border-slate-800 bg-slate-950/20 ${mobileMenuOpen ? 'block' : 'hidden lg:block'}`}>
           <button
             id="btn-open-scholar-chat"
             onClick={() => setChatOpen(true)}
-            className="w-full py-2.5 bg-gradient-to-r from-amber-800 to-amber-700 hover:from-amber-700 hover:to-amber-600 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer"
+            className="w-full py-2.5 bg-[#d4af37] hover:bg-[#b45309] text-[#0f172a] hover:text-white rounded-xl text-xs font-black flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer"
           >
-            <Sparkles className="w-4 h-4 text-amber-200" />
+            <Sparkles className="w-4 h-4 text-[#0f172a] hover:text-white" />
             <span>AI Scripture Assistant</span>
           </button>
         </div>
@@ -415,24 +574,33 @@ export default function App() {
       <main className="flex-1 flex flex-col min-w-0">
         
         {/* Floating live top bar for context details */}
-        <header className="bg-white border-b border-[#e7e5e4] px-6 py-4 flex items-center justify-between shadow-xs sticky top-0 z-20">
+        <header className="bg-white border-b border-[#e2e8f0] px-6 py-4 flex items-center justify-between shadow-xs sticky top-0 z-20">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold font-mono text-stone-400 capitalize bg-stone-50 border border-stone-200/60 px-2 py-1 rounded-md">
+            <span className="text-xs font-bold font-mono text-slate-500 uppercase bg-slate-100 border border-slate-200 px-2 py-1 rounded-md">
               {activeTab.replace('-', ' ')}
             </span>
-            <span className="text-xs text-stone-300">|</span>
-            <span className="text-xs font-semibold text-stone-400 font-mono">{activeTranslation} Translation active</span>
+            <span className="text-xs text-slate-300">|</span>
+            <span className="text-xs font-semibold text-slate-500 font-mono">{activeTranslation} Translation active</span>
+            {currentUser && (
+              <>
+                <span className="text-xs text-slate-300">|</span>
+                <span className="text-xs font-bold text-green-600 flex items-center gap-1">
+                  <User className="w-3 h-3" />
+                  <span>Synced as {currentUser.displayName || currentUser.email?.split('@')[0]}</span>
+                </span>
+              </>
+            )}
           </div>
 
           <div className="flex items-center gap-3">
             {/* Quick floating chat trigger */}
             <button
               onClick={() => setChatOpen(!chatOpen)}
-              className="p-2 bg-stone-100 hover:bg-[#fefce8] hover:text-[#854d0e] rounded-xl text-stone-500 transition-all relative cursor-pointer"
+              className="p-2 bg-slate-100 hover:bg-slate-200 hover:text-[#0f172a] rounded-xl text-slate-500 transition-all relative cursor-pointer"
               title="Open Study Companion Chat"
             >
               <MessageCircle className="w-4 h-4" />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-[#854d0e] rounded-full animate-ping" />
+              <span className="absolute top-1 right-1 w-2 h-2 bg-[#d4af37] rounded-full animate-ping" />
             </button>
           </div>
         </header>
@@ -445,37 +613,37 @@ export default function App() {
 
       {/* Sliding AI Scripture Scholar Chat Drawer */}
       {chatOpen && (
-        <div className="fixed inset-0 bg-stone-900/40 backdrop-blur-xs z-50 flex justify-end transition-opacity animate-fadeIn">
+        <div className="fixed inset-0 bg-[#0f172a]/40 backdrop-blur-xs z-50 flex justify-end transition-opacity animate-fadeIn">
           
           {/* Backdrop closer click */}
           <div className="flex-1 animate-fadeIn" onClick={() => setChatOpen(false)} />
 
           {/* Drawer container */}
-          <div className="w-full max-w-md bg-white h-full shadow-2xl flex flex-col justify-between border-l border-stone-200">
+          <div className="w-full max-w-md bg-white h-full shadow-2xl flex flex-col justify-between border-l border-slate-200">
             {/* Header */}
-            <div className="px-5 py-4 border-b border-stone-100 flex justify-between items-center bg-stone-50/50">
+            <div className="px-5 py-4 border-b border-slate-100 flex justify-between items-center bg-[#0f172a] text-white">
               <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-amber-600" />
-                <span className="font-serif font-bold text-stone-800 text-lg">AI Scripture Scholar</span>
+                <Sparkles className="w-4 h-4 text-[#d4af37]" />
+                <span className="font-serif font-bold text-white text-lg">AI Scripture Scholar</span>
               </div>
               <button
                 id="btn-close-chat"
                 onClick={() => setChatOpen(false)}
-                className="p-1 text-stone-400 hover:text-stone-800 rounded-lg cursor-pointer"
+                className="p-1 text-slate-300 hover:text-white rounded-lg cursor-pointer animate-fadeIn"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Messages Log */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[#fcfbf9]">
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50">
               {chatHistory.length === 0 ? (
-                <div className="py-12 text-center text-stone-400 space-y-3">
-                  <div className="w-12 h-12 rounded-full bg-[#fefce8] flex items-center justify-center text-[#854d0e] mx-auto shadow-sm">
-                    <Sparkles className="w-5 h-5" />
+                <div className="py-12 text-center text-slate-400 space-y-3">
+                  <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-[#0f172a] mx-auto shadow-sm">
+                    <Sparkles className="w-5 h-5 text-[#d4af37]" />
                   </div>
-                  <h4 className="text-sm font-semibold text-stone-600 font-serif">Scripture Study Lounge</h4>
-                  <p className="text-xs max-w-xs mx-auto leading-relaxed">
+                  <h4 className="text-sm font-semibold text-slate-700 font-serif">Scripture Study Lounge</h4>
+                  <p className="text-xs max-w-xs mx-auto leading-relaxed text-slate-500">
                     Ask questions about chapters, Bible historical context, translation variations, or spiritual application of any verse!
                   </p>
                   
@@ -483,13 +651,13 @@ export default function App() {
                   <div className="pt-4 flex flex-col gap-2 max-w-xs mx-auto">
                     <button
                       onClick={() => setChatMessage("Explain the historical context of the Gospel of Luke.")}
-                      className="px-3 py-2 bg-white hover:bg-stone-50 border border-stone-200 text-left rounded-xl text-[11px] font-semibold text-[#854d0e] transition-colors cursor-pointer"
+                      className="px-3 py-2 bg-white hover:bg-slate-50 border border-slate-200 text-left rounded-xl text-[11px] font-semibold text-[#0f172a] transition-colors cursor-pointer"
                     >
                       "Explain the context of Luke."
                     </button>
                     <button
                       onClick={() => setChatMessage("What are some key theological themes in Ephesians?")}
-                      className="px-3 py-2 bg-white hover:bg-stone-50 border border-stone-200 text-left rounded-xl text-[11px] font-semibold text-[#854d0e] transition-colors cursor-pointer"
+                      className="px-3 py-2 bg-white hover:bg-slate-50 border border-slate-200 text-left rounded-xl text-[11px] font-semibold text-[#0f172a] transition-colors cursor-pointer"
                     >
                       "Theological themes in Ephesians."
                     </button>
@@ -503,14 +671,14 @@ export default function App() {
                       msg.role === 'user' ? 'ml-auto items-end' : 'mr-auto items-start'
                     }`}
                   >
-                    <span className="text-[10px] text-stone-400 font-mono uppercase mb-0.5 tracking-wider px-1">
+                    <span className="text-[10px] text-slate-400 font-mono uppercase mb-0.5 tracking-wider px-1">
                       {msg.role === 'user' ? 'You' : 'Scholar'}
                     </span>
                     <div
                       className={`p-3.5 rounded-2xl text-xs leading-relaxed ${
                         msg.role === 'user'
-                          ? 'bg-[#854d0e] text-white rounded-tr-none shadow-sm'
-                          : 'bg-white text-stone-800 rounded-tl-none border border-stone-200/70 font-sans shadow-xs whitespace-pre-line'
+                          ? 'bg-[#0f172a] text-white border-l-4 border-[#d4af37] rounded-tr-none shadow-sm'
+                          : 'bg-white text-slate-800 rounded-tl-none border border-slate-200/70 font-sans shadow-xs whitespace-pre-line'
                       }`}
                     >
                       {msg.text}
@@ -520,9 +688,9 @@ export default function App() {
               )}
               {chatLoading && (
                 <div className="flex flex-col items-start max-w-[85%]">
-                  <span className="text-[10px] text-stone-400 font-mono uppercase mb-0.5">Scholar</span>
-                  <div className="bg-white border border-stone-200 rounded-2xl rounded-tl-none p-3.5 text-xs text-stone-400 animate-pulse flex items-center gap-1.5">
-                    <Sparkles className="w-3.5 h-3.5 animate-spin text-amber-600" />
+                  <span className="text-[10px] text-slate-400 font-mono uppercase mb-0.5">Scholar</span>
+                  <div className="bg-white border border-slate-200 rounded-2xl rounded-tl-none p-3.5 text-xs text-slate-400 animate-pulse flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 animate-spin text-[#d4af37]" />
                     <span>Analyzing scripture references...</span>
                   </div>
                 </div>
@@ -530,12 +698,12 @@ export default function App() {
             </div>
 
             {/* Footer Input Bar */}
-            <form onSubmit={handleSendChatMessage} className="p-3 border-t border-stone-100 bg-white flex gap-2">
+            <form onSubmit={handleSendChatMessage} className="p-3 border-t border-slate-100 bg-white flex gap-2">
               <input
                 id="chat-input-text"
                 type="text"
                 placeholder="Ask about scripture history, terms, themes..."
-                className="flex-1 px-4 py-2 text-xs border border-stone-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-stone-400 bg-stone-50 focus:bg-white transition-all"
+                className="flex-1 px-4 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-slate-400 bg-slate-50 focus:bg-white transition-all"
                 value={chatMessage}
                 onChange={(e) => setChatMessage(e.target.value)}
                 disabled={chatLoading}
@@ -544,7 +712,7 @@ export default function App() {
                 id="btn-send-chat"
                 type="submit"
                 disabled={chatLoading || !chatMessage.trim()}
-                className="p-2 bg-[#854d0e] hover:bg-[#a16207] text-white rounded-xl disabled:opacity-45 transition-colors cursor-pointer"
+                className="p-2 bg-[#0f172a] hover:bg-slate-800 text-[#d4af37] rounded-xl disabled:opacity-45 transition-colors cursor-pointer"
               >
                 <Send className="w-4 h-4" />
               </button>

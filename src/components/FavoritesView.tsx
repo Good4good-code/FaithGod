@@ -41,7 +41,7 @@ export default function FavoritesView({
           <Bookmark className="w-8 h-8 text-stone-300 mx-auto" />
           <h4 className="text-sm font-semibold text-stone-600">No favorite verses yet</h4>
           <p className="text-xs max-w-xs mx-auto">
-            Browse the Bible in the <span className="font-semibold text-[#854d0e]">Bible Reader</span> and tap the bookmark icon on any verse to save it here.
+            Browse the Bible in the <span className="font-semibold text-[#d4af37]">Bible Reader</span> and tap the bookmark icon on any verse to save it here.
           </p>
         </div>
       ) : (
@@ -59,7 +59,7 @@ export default function FavoritesView({
                 {/* Header */}
                 <div className="flex items-start justify-between gap-4">
                   <div className="space-y-1">
-                    <span className="text-xs font-bold text-[#854d0e] uppercase tracking-wider font-mono">
+                    <span className="text-xs font-bold text-[#0f172a] uppercase tracking-wider font-mono">
                       {fav.bookName} {fav.chapter}:{fav.verse}
                     </span>
                     <div className="flex items-center gap-1.5 text-[10px] text-stone-400 font-mono">
@@ -95,7 +95,7 @@ export default function FavoritesView({
                       <button
                         id={`btn-edit-note-${key}`}
                         onClick={() => handleStartEdit(fav)}
-                        className="text-xs font-semibold text-[#854d0e] hover:underline"
+                        className="text-xs font-semibold text-[#0f172a] hover:text-[#d4af37] hover:underline"
                       >
                         {fav.notes ? 'Edit Notes' : 'Add Study Notes'}
                       </button>
@@ -121,9 +121,9 @@ export default function FavoritesView({
                         </button>
                         <button
                           onClick={() => handleSaveNotes(fav)}
-                          className="px-2.5 py-1 text-[10px] font-semibold text-white bg-amber-800 rounded flex items-center gap-1 cursor-pointer"
+                          className="px-2.5 py-1 text-[10px] font-semibold text-[#d4af37] bg-[#0f172a] border border-[#d4af37]/20 rounded flex items-center gap-1 cursor-pointer"
                         >
-                          <Save className="w-3 h-3" />
+                          <Save className="w-3 h-3 text-[#d4af37]" />
                           <span>Save Notes</span>
                         </button>
                       </div>
@@ -144,9 +144,9 @@ export default function FavoritesView({
                   <button
                     id={`btn-ai-study-fav-${key}`}
                     onClick={() => onAskAssistant(`Can you explain the historical and linguistic context of ${fav.bookName} ${fav.chapter}:${fav.verse}? Here is the verse: "${fav.text}". I also noted this reflection: "${fav.notes || ''}"`)}
-                    className="text-[#854d0e] hover:text-[#a16207] font-semibold flex items-center gap-1 hover:underline cursor-pointer bg-transparent border-0"
+                    className="text-[#d4af37] hover:text-[#0f172a] font-semibold flex items-center gap-1 hover:underline cursor-pointer bg-transparent border-0"
                   >
-                    <Sparkles className="w-3.5 h-3.5" />
+                    <Sparkles className="w-3.5 h-3.5 text-[#d4af37]" />
                     <span>Study with AI Assistant</span>
                   </button>
                 </div>
