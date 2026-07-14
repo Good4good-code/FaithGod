@@ -33,9 +33,6 @@ export default function App() {
   // App settings state
   const [activeTranslation, setActiveTranslation] = useState<string>('NKJV');
   const [hasApiKey, setHasApiKey] = useState<boolean>(true); // default true, checked via fetch
-  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
-    return (localStorage.getItem('faithgod_theme') as 'light' | 'dark') || 'light';
-  });
 
   // User auth state
   const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null);
@@ -371,11 +368,6 @@ export default function App() {
     localStorage.setItem('faithgod_trans', trans);
   };
 
-  const handleThemeChange = (newTheme: 'light' | 'dark') => {
-    setTheme(newTheme);
-    localStorage.setItem('faithgod_theme', newTheme);
-  };
-
   // Quick prompt triggering for Chat Drawer
   const handleAskAssistant = (prompt: string) => {
     setChatOpen(true);
@@ -497,8 +489,6 @@ export default function App() {
             activeTranslation={activeTranslation}
             onChangeTranslation={handleTranslationChange}
             hasApiKey={hasApiKey}
-            theme={theme}
-            onChangeTheme={handleThemeChange}
           />
         );
       default:
@@ -507,7 +497,7 @@ export default function App() {
   };
 
   return (
-    <div id="faithgod-app-container" className={`min-h-screen bg-[#f8fafc] flex flex-col lg:flex-row text-[#0f172a] font-sans antialiased animate-fadeIn ${theme}`}>
+    <div id="faithgod-app-container" className="min-h-screen bg-[#f8fafc] flex flex-col lg:flex-row text-[#0f172a] font-sans antialiased animate-fadeIn">
       
       {/* Sidebar Navigation */}
       <aside className="bg-[#0f172a] border-b lg:border-b-0 lg:border-r border-slate-800 w-full lg:w-64 shrink-0 flex flex-col justify-between lg:sticky lg:top-0 lg:h-screen z-30 shadow-md">
