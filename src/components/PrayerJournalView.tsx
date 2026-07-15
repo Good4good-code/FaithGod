@@ -79,8 +79,8 @@ export default function PrayerJournalView({
     <div id="prayer-journal-view" className="max-w-4xl mx-auto space-y-6 py-4">
       <div className="flex justify-between items-center flex-wrap gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-stone-800 font-serif">Prayer Journal</h2>
-          <p className="text-sm text-stone-500">Commit your concerns to God and build a record of His faithfulness.</p>
+          <h2 className="text-2xl font-bold text-stone-800 dark:text-slate-100 font-serif">Prayer Journal</h2>
+          <p className="text-sm text-stone-500 dark:text-slate-400">Commit your concerns to God and build a record of His faithfulness.</p>
         </div>
         
         <button
@@ -95,14 +95,14 @@ export default function PrayerJournalView({
 
       {/* Form Card */}
       {showForm && (
-        <form id="prayer-form" onSubmit={handleSubmit} className="bg-white border border-[#e7e5e4] p-6 rounded-2xl shadow-sm space-y-4 animate-fadeIn">
+        <form id="prayer-form" onSubmit={handleSubmit} className="bg-white dark:bg-[#0f172a] border border-[#e7e5e4] dark:border-slate-800 p-6 rounded-2xl shadow-sm space-y-4 animate-fadeIn">
           <div className="space-y-1">
-            <label className="text-xs font-bold text-stone-500 uppercase tracking-wider font-mono">Title / Topic</label>
+            <label className="text-xs font-bold text-stone-500 dark:text-slate-400 uppercase tracking-wider font-mono">Title / Topic</label>
             <input
               id="prayer-title-input"
               type="text"
               placeholder="e.g., Healing for Grandmother, Career Guidance"
-              className="w-full px-4 py-2 text-sm border border-stone-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-stone-400"
+              className="w-full px-4 py-2 text-sm bg-stone-50 dark:bg-slate-900/40 text-slate-800 dark:text-slate-100 border border-stone-200 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-1 focus:ring-stone-400 dark:focus:ring-slate-700 focus:bg-white dark:focus:bg-[#131f42]"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
@@ -110,12 +110,12 @@ export default function PrayerJournalView({
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-bold text-stone-500 uppercase tracking-wider font-mono">Request Details / Journal Entry</label>
+            <label className="text-xs font-bold text-stone-500 dark:text-slate-400 uppercase tracking-wider font-mono">Request Details / Journal Entry</label>
             <textarea
               id="prayer-request-input"
               rows={3}
               placeholder="Write your prayers, thoughts, and specific requests..."
-              className="w-full px-4 py-2 text-sm border border-stone-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-stone-400"
+              className="w-full px-4 py-2 text-sm bg-stone-50 dark:bg-slate-900/40 text-slate-800 dark:text-slate-100 border border-stone-200 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-1 focus:ring-stone-400 dark:focus:ring-slate-700 focus:bg-white dark:focus:bg-[#131f42]"
               value={request}
               onChange={(e) => setRequest(e.target.value)}
               required
@@ -127,7 +127,7 @@ export default function PrayerJournalView({
               id="btn-cancel-prayer"
               type="button"
               onClick={() => setShowForm(false)}
-              className="px-4 py-2 text-stone-500 hover:bg-stone-50 text-sm font-semibold rounded-xl border border-stone-200"
+              className="px-4 py-2 text-stone-500 dark:text-slate-400 hover:bg-stone-50 dark:hover:bg-slate-800 text-sm font-semibold rounded-xl border border-stone-200 dark:border-slate-800"
             >
               Cancel
             </button>
@@ -143,7 +143,7 @@ export default function PrayerJournalView({
       )}
 
       {/* Filter Tabs */}
-      <div className="flex items-center justify-between border-b border-stone-200 pb-2">
+      <div className="flex items-center justify-between border-b border-stone-200 dark:border-slate-800 pb-2">
         <div className="flex gap-4">
           {(['all', 'active', 'answered'] as const).map(tab => (
             <button
@@ -152,26 +152,26 @@ export default function PrayerJournalView({
               onClick={() => setActiveTab(tab)}
               className={`pb-2 text-sm font-semibold capitalize relative transition-all cursor-pointer ${
                 activeTab === tab
-                  ? 'text-[#0f172a]'
-                  : 'text-stone-400 hover:text-stone-600'
+                  ? 'text-[#0f172a] dark:text-[#d4af37]'
+                  : 'text-stone-400 hover:text-stone-600 dark:text-slate-500 dark:hover:text-slate-300'
               }`}
             >
               <span>{tab === 'active' ? 'Active Requests' : tab === 'answered' ? 'Answered Prayers' : 'All Requests'}</span>
               {activeTab === tab && (
-                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#0f172a] rounded-full" />
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#0f172a] dark:bg-[#d4af37] rounded-full" />
               )}
             </button>
           ))}
         </div>
-        <span className="text-xs text-stone-400 font-mono">{prayers.length} total entries</span>
+        <span className="text-xs text-stone-400 dark:text-slate-500 font-mono">{prayers.length} total entries</span>
       </div>
 
       {/* List */}
       <div className="space-y-4">
         {filteredPrayers.length === 0 ? (
-          <div className="bg-white border border-[#e7e5e4] rounded-2xl p-12 text-center text-stone-400 space-y-2 shadow-sm">
-            <Heart className="w-8 h-8 text-stone-300 mx-auto" />
-            <h4 className="text-sm font-semibold text-stone-600">No prayer entries found</h4>
+          <div className="bg-white dark:bg-[#0f172a] border border-[#e7e5e4] dark:border-slate-800 rounded-2xl p-12 text-center text-stone-400 dark:text-slate-500 space-y-2 shadow-sm">
+            <Heart className="w-8 h-8 text-stone-300 dark:text-slate-600 mx-auto" />
+            <h4 className="text-sm font-semibold text-stone-600 dark:text-slate-400">No prayer entries found</h4>
             <p className="text-xs max-w-xs mx-auto">Use the button above to add your first prayer request or journal entry.</p>
           </div>
         ) : (
@@ -179,8 +179,8 @@ export default function PrayerJournalView({
             <div
               id={`prayer-card-${item.id}`}
               key={item.id}
-              className={`bg-white border rounded-2xl p-6 shadow-sm transition-all flex flex-col justify-between ${
-                item.answered ? 'border-green-100 bg-green-50/10' : 'border-[#e7e5e4]'
+              className={`bg-white dark:bg-[#0f172a] border rounded-2xl p-6 shadow-sm transition-all flex flex-col justify-between ${
+                item.answered ? 'border-green-100 dark:border-green-950/40 bg-green-50/10 dark:bg-green-950/5' : 'border-[#e7e5e4] dark:border-slate-800'
               }`}
             >
               <div className="flex items-start justify-between gap-4">
@@ -189,17 +189,17 @@ export default function PrayerJournalView({
                     id={`btn-toggle-answered-${item.id}`}
                     onClick={() => item.answered ? onToggleAnswered(item.id) : handleStartAnswering(item.id)}
                     className={`mt-1 transition-colors shrink-0 cursor-pointer bg-transparent border-none ${
-                      item.answered ? 'text-green-600' : 'text-stone-300 hover:text-stone-400'
+                      item.answered ? 'text-green-600 dark:text-green-400' : 'text-stone-300 dark:text-slate-600 hover:text-stone-400 dark:hover:text-slate-300'
                     }`}
                   >
                     {item.answered ? <CheckCircle2 className="w-5 h-5 fill-current" /> : <Circle className="w-5 h-5" />}
                   </button>
 
                   <div className="space-y-1">
-                    <h3 className={`font-bold font-serif text-lg ${item.answered ? 'text-stone-500 line-through' : 'text-stone-800'}`}>
+                    <h3 className={`font-bold font-serif text-lg ${item.answered ? 'text-stone-500 line-through dark:text-slate-500' : 'text-stone-800 dark:text-slate-100'}`}>
                       {item.title}
                     </h3>
-                    <div className="flex items-center gap-1.5 text-xs text-stone-400 font-mono">
+                    <div className="flex items-center gap-1.5 text-xs text-stone-400 dark:text-slate-500 font-mono">
                       <Calendar className="w-3 h-3" />
                       <span>{item.date}</span>
                     </div>
@@ -209,25 +209,25 @@ export default function PrayerJournalView({
                 <button
                   id={`btn-delete-prayer-${item.id}`}
                   onClick={() => onDeletePrayer(item.id)}
-                  className="text-stone-400 hover:text-red-500 p-1 rounded-lg hover:bg-stone-50 transition-colors cursor-pointer"
+                  className="text-stone-400 hover:text-red-500 dark:text-slate-500 dark:hover:text-red-400 p-1 rounded-lg hover:bg-stone-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
               </div>
 
               {/* Request Description */}
-              <p className="text-sm text-stone-600 pl-8 mt-3 whitespace-pre-line leading-relaxed">
+              <p className="text-sm text-stone-600 dark:text-slate-300 pl-8 mt-3 whitespace-pre-line leading-relaxed">
                 {item.request}
               </p>
 
               {/* Answer details */}
               {item.answered && item.answerNote && (
-                <div className="mt-4 pl-8 border-l-2 border-green-200 bg-green-50/40 p-4 rounded-xl space-y-1">
-                  <span className="text-xs font-bold text-green-700 flex items-center gap-1">
+                <div className="mt-4 pl-8 border-l-2 border-green-200 dark:border-green-800 bg-green-50/40 dark:bg-green-950/20 p-4 rounded-xl space-y-1">
+                  <span className="text-xs font-bold text-green-700 dark:text-green-400 flex items-center gap-1">
                     <Smile className="w-3.5 h-3.5" />
                     <span>How God Answered:</span>
                   </span>
-                  <p className="text-sm text-stone-600 italic">
+                  <p className="text-sm text-stone-600 dark:text-slate-300 italic">
                     "{item.answerNote}"
                   </p>
                 </div>
@@ -235,26 +235,26 @@ export default function PrayerJournalView({
 
               {/* Save Answer Note block */}
               {answeringId === item.id && (
-                <div className="mt-4 pl-8 space-y-3 bg-stone-50 p-4 rounded-xl">
-                  <label className="block text-xs font-bold text-stone-500 uppercase tracking-wider font-mono">Record God's Answer (Optional)</label>
+                <div className="mt-4 pl-8 space-y-3 bg-stone-50 dark:bg-slate-900/60 p-4 rounded-xl border border-stone-100 dark:border-slate-800/80">
+                  <label className="block text-xs font-bold text-stone-500 dark:text-slate-400 uppercase tracking-wider font-mono">Record God's Answer (Optional)</label>
                   <textarea
                     id="answer-note-input"
                     rows={2}
                     placeholder="Describe how your prayer was answered..."
-                    className="w-full px-3 py-1.5 text-sm bg-white border border-stone-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-stone-400"
+                    className="w-full px-3 py-1.5 text-sm bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 border border-stone-200 dark:border-slate-800 rounded-lg focus:outline-none focus:ring-1 focus:ring-stone-400 dark:focus:ring-slate-700"
                     value={answerNote}
                     onChange={(e) => setAnswerNote(e.target.value)}
                   />
                   <div className="flex gap-2 justify-end">
                     <button
                       onClick={() => setAnsweringId(null)}
-                      className="px-3 py-1 text-xs font-semibold text-stone-500 bg-white border border-stone-200 rounded-md cursor-pointer"
+                      className="px-3 py-1 text-xs font-semibold text-stone-500 dark:text-slate-400 bg-white dark:bg-[#131f42] border border-stone-200 dark:border-slate-800 rounded-md cursor-pointer"
                     >
                       Cancel
                     </button>
                     <button
                       onClick={() => handleSaveAnswer(item.id)}
-                      className="px-3 py-1 text-xs font-semibold text-white bg-green-600 rounded-md cursor-pointer"
+                      className="px-3 py-1 text-xs font-semibold text-white bg-green-600 dark:bg-green-700 rounded-md cursor-pointer"
                     >
                       Save & Mark Answered
                     </button>
@@ -266,7 +266,7 @@ export default function PrayerJournalView({
               {!item.answered && (
                 <div className="mt-4 pl-8">
                   {encouragements[item.id] ? (
-                    <div className="bg-slate-50 border border-slate-200/60 p-3.5 rounded-xl text-xs text-stone-600 leading-relaxed flex items-start gap-2 animate-fadeIn font-serif">
+                    <div className="bg-slate-50 dark:bg-slate-900/40 border border-slate-200/60 dark:border-slate-800/80 p-3.5 rounded-xl text-xs text-stone-600 dark:text-slate-300 leading-relaxed flex items-start gap-2 animate-fadeIn font-serif">
                       <Sparkles className="w-4 h-4 text-[#d4af37] shrink-0 mt-0.5" />
                       <span>{encouragements[item.id]}</span>
                     </div>
@@ -275,7 +275,7 @@ export default function PrayerJournalView({
                       id={`btn-ai-comfort-${item.id}`}
                       onClick={() => handleGetEncouragement(item)}
                       disabled={loadingEncouragement === item.id}
-                      className="text-xs font-semibold text-[#d4af37] hover:text-[#0f172a] flex items-center gap-1 disabled:opacity-50 transition-colors cursor-pointer bg-transparent border-0"
+                      className="text-xs font-semibold text-[#d4af37] hover:text-[#0f172a] dark:hover:text-[#d4af37] flex items-center gap-1 disabled:opacity-50 transition-colors cursor-pointer bg-transparent border-0"
                     >
                       <Sparkles className="w-3.5 h-3.5 text-[#d4af37]" />
                       <span>{loadingEncouragement === item.id ? 'Reflecting on scripture...' : 'Receive AI Scripture Encouragement'}</span>

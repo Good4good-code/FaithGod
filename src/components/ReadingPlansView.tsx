@@ -34,24 +34,24 @@ export default function ReadingPlansView({
   return (
     <div id="reading-plans-view" className="max-w-4xl mx-auto space-y-6 py-4">
       <div>
-        <h2 className="text-2xl font-bold text-stone-800 font-serif">Bible Study & Reading Plans</h2>
-        <p className="text-sm text-stone-500">Form deep habits by engaging with scripture using highly structured thematic paths.</p>
+        <h2 className="text-2xl font-bold text-stone-800 dark:text-slate-100 font-serif">Bible Study & Reading Plans</h2>
+        <p className="text-sm text-stone-500 dark:text-slate-400">Form deep habits by engaging with scripture using highly structured thematic paths.</p>
       </div>
 
       {/* Active Reading Plan Section */}
       {activePlan ? (
-        <div className="bg-slate-50 border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+        <div className="bg-slate-50 dark:bg-[#0f172a] border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
           <div className="flex justify-between items-start flex-wrap gap-4">
             <div className="space-y-1">
-              <span className="text-xs font-bold uppercase tracking-widest text-[#0f172a] font-mono">Active Reading Plan</span>
-              <h3 className="text-2xl font-bold text-stone-800 font-serif">{activePlan.title}</h3>
-              <p className="text-sm text-stone-600 max-w-2xl">{activePlan.description}</p>
+              <span className="text-xs font-bold uppercase tracking-widest text-[#0f172a] dark:text-[#d4af37] font-mono">Active Reading Plan</span>
+              <h3 className="text-2xl font-bold text-stone-800 dark:text-slate-100 font-serif">{activePlan.title}</h3>
+              <p className="text-sm text-stone-600 dark:text-slate-300 max-w-2xl">{activePlan.description}</p>
             </div>
             
             <button
               id={`btn-reset-plan-${activePlan.id}`}
               onClick={() => onResetPlan(activePlan.id)}
-              className="text-xs font-semibold text-stone-400 hover:text-red-500 flex items-center gap-1 transition-colors bg-white px-3 py-1.5 border border-stone-200 rounded-lg cursor-pointer"
+              className="text-xs font-semibold text-stone-400 dark:text-slate-500 hover:text-red-500 dark:hover:text-red-400 flex items-center gap-1 transition-colors bg-white dark:bg-slate-900 px-3 py-1.5 border border-stone-200 dark:border-slate-800 rounded-lg cursor-pointer"
               title="Cancel and Reset Plan"
             >
               <Trash2 className="w-3.5 h-3.5" />
@@ -62,15 +62,15 @@ export default function ReadingPlansView({
           {/* Progress bar */}
           <div className="space-y-2">
             <div className="flex justify-between items-center text-sm">
-              <span className="font-semibold text-stone-700 flex items-center gap-1.5">
+              <span className="font-semibold text-stone-700 dark:text-slate-300 flex items-center gap-1.5">
                 <Award className="w-4 h-4 text-[#d4af37]" />
                 <span>Overall Progress</span>
               </span>
-              <span className="font-mono font-bold text-[#0f172a]">{calculateProgress(activePlan)}% Completed</span>
+              <span className="font-mono font-bold text-[#0f172a] dark:text-[#d4af37]">{calculateProgress(activePlan)}% Completed</span>
             </div>
-            <div className="w-full bg-stone-200/60 h-2.5 rounded-full overflow-hidden">
+            <div className="w-full bg-stone-200/60 dark:bg-slate-800 h-2.5 rounded-full overflow-hidden">
               <div 
-                className="bg-[#0f172a] h-full rounded-full transition-all duration-500" 
+                className="bg-[#0f172a] dark:bg-[#d4af37] h-full rounded-full transition-all duration-500" 
                 style={{ width: `${calculateProgress(activePlan)}%` }}
               />
             </div>
@@ -78,7 +78,7 @@ export default function ReadingPlansView({
 
           {/* Days breakdown list */}
           <div className="space-y-3 pt-2">
-            <h4 className="text-xs font-bold text-stone-500 uppercase tracking-wider font-mono">Daily Assignments</h4>
+            <h4 className="text-xs font-bold text-stone-500 dark:text-slate-400 uppercase tracking-wider font-mono">Daily Assignments</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {activePlan.days.map((day) => (
                 <div
@@ -86,8 +86,8 @@ export default function ReadingPlansView({
                   key={day.day}
                   className={`p-4 border rounded-xl flex items-center justify-between transition-all ${
                     day.completed
-                      ? 'border-green-100 bg-green-50/20 text-stone-500'
-                      : 'border-stone-200 bg-white hover:border-amber-200'
+                      ? 'border-green-100 dark:border-green-950/30 bg-green-50/20 dark:bg-green-950/10 text-stone-500 dark:text-slate-400'
+                      : 'border-stone-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:border-amber-200 dark:hover:border-amber-900/30'
                   }`}
                 >
                   <div className="flex items-center gap-3 overflow-hidden">
@@ -95,15 +95,15 @@ export default function ReadingPlansView({
                       id={`btn-complete-day-${day.day}`}
                       onClick={() => onCompleteDay(activePlan.id, day.day)}
                       className={`shrink-0 transition-colors cursor-pointer ${
-                        day.completed ? 'text-green-600' : 'text-stone-300 hover:text-[#0f172a]'
+                        day.completed ? 'text-green-600 dark:text-green-400' : 'text-stone-300 dark:text-slate-600 hover:text-[#0f172a] dark:hover:text-[#d4af37]'
                       }`}
                     >
                       {day.completed ? <CheckCircle2 className="w-5 h-5 fill-current" /> : <Circle className="w-5 h-5" />}
                     </button>
                     
                     <div className="overflow-hidden">
-                      <span className="text-xs text-stone-400 font-mono">Day {day.day}</span>
-                      <p className="font-semibold text-sm truncate font-serif text-stone-800">{day.title}</p>
+                      <span className="text-xs text-stone-400 dark:text-slate-500 font-mono">Day {day.day}</span>
+                      <p className="font-semibold text-sm truncate font-serif text-stone-800 dark:text-slate-200">{day.title}</p>
                       
                       {/* References tags */}
                       <div className="flex gap-1.5 mt-1 overflow-x-auto no-scrollbar">
@@ -112,7 +112,7 @@ export default function ReadingPlansView({
                             id={`btn-nav-ref-${day.day}-${idx}`}
                             key={idx}
                             onClick={() => parseReferenceForNavigation(ref)}
-                            className="text-[11px] font-semibold text-[#0f172a] hover:text-[#d4af37] bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-md shrink-0 flex items-center gap-0.5"
+                            className="text-[11px] font-semibold text-[#0f172a] dark:text-[#d4af37] hover:text-[#d4af37] dark:hover:text-amber-300 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-2 py-0.5 rounded-md shrink-0 flex items-center gap-0.5"
                           >
                             <BookOpen className="w-2.5 h-2.5" />
                             <span>Read {ref}</span>
@@ -125,7 +125,7 @@ export default function ReadingPlansView({
                   {!day.completed && (
                     <button
                       onClick={() => parseReferenceForNavigation(day.references[0])}
-                      className="p-1 rounded-lg hover:bg-stone-100 text-stone-400 hover:text-[#0f172a] shrink-0"
+                      className="p-1 rounded-lg hover:bg-stone-100 dark:hover:bg-slate-800 text-stone-400 hover:text-[#0f172a] dark:hover:text-[#d4af37] shrink-0"
                     >
                       <ArrowRight className="w-4 h-4" />
                     </button>
@@ -137,41 +137,41 @@ export default function ReadingPlansView({
         </div>
       ) : (
         /* Prompt to select a plan if none active */
-        <div className="bg-[#0f172a]/5 border border-slate-200 rounded-2xl p-6 text-center text-stone-600 font-serif text-sm">
+        <div className="bg-[#0f172a]/5 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 text-stone-600 dark:text-slate-300 rounded-2xl p-6 text-center font-serif text-sm">
           💡 You don't have an active Bible reading plan right now. Choose one below to start your study journey!
         </div>
       )}
 
       {/* Available Plans Browser */}
       <div className="space-y-4">
-        <h3 className="font-bold text-stone-800 font-serif text-lg">Available Reading Plans</h3>
+        <h3 className="font-bold text-stone-800 dark:text-slate-100 font-serif text-lg">Available Reading Plans</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {inactivePlans.map((plan) => (
             <div
               id={`inactive-plan-card-${plan.id}`}
               key={plan.id}
-              className="bg-white border border-[#e7e5e4] hover:border-stone-300 rounded-2xl p-6 shadow-sm flex flex-col justify-between hover:shadow-md transition-all"
+              className="bg-white dark:bg-[#0f172a] border border-[#e7e5e4] dark:border-slate-800 hover:border-stone-300 dark:hover:border-slate-700 rounded-2xl p-6 shadow-sm flex flex-col justify-between hover:shadow-md transition-all"
             >
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-xs bg-stone-100 text-stone-600 px-2.5 py-1 rounded-md font-mono uppercase">
+                  <span className="text-xs bg-stone-100 dark:bg-slate-900 text-stone-600 dark:text-slate-300 px-2.5 py-1 rounded-md font-mono uppercase">
                     {plan.category}
                   </span>
-                  <span className="text-xs font-bold text-stone-400 font-mono">
+                  <span className="text-xs font-bold text-stone-400 dark:text-slate-500 font-mono">
                     {plan.durationDays} Days Duration
                   </span>
                 </div>
 
                 <div className="space-y-1">
-                  <h4 className="font-bold font-serif text-lg text-stone-800">{plan.title}</h4>
-                  <p className="text-xs text-stone-500 leading-relaxed">{plan.description}</p>
+                  <h4 className="font-bold font-serif text-lg text-stone-800 dark:text-slate-100">{plan.title}</h4>
+                  <p className="text-xs text-stone-500 dark:text-slate-400 leading-relaxed">{plan.description}</p>
                 </div>
               </div>
 
               <button
                 id={`btn-start-plan-${plan.id}`}
                 onClick={() => onActivatePlan(plan.id)}
-                className="mt-6 w-full py-2 bg-stone-50 border border-stone-200 hover:bg-[#0f172a] hover:text-[#d4af37] text-stone-700 hover:border-[#0f172a] rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                className="mt-6 w-full py-2 bg-stone-50 dark:bg-slate-900 border border-stone-200 dark:border-slate-800 hover:bg-[#0f172a] dark:hover:bg-[#131f42] hover:text-[#d4af37] text-stone-700 dark:text-slate-200 hover:border-[#0f172a] dark:hover:border-[#d4af37]/30 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
               >
                 <Play className="w-3.5 h-3.5" />
                 <span>Start Reading Plan</span>

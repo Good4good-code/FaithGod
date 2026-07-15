@@ -132,35 +132,35 @@ export default function BibleQuizView() {
     <div id="bible-quiz-view" className="max-w-3xl mx-auto py-4">
       {/* Quiz Lobby */}
       {currentIndex === -1 && !loading && (
-        <div className="bg-white border border-[#e7e5e4] rounded-3xl p-8 shadow-sm space-y-6">
+        <div className="bg-white dark:bg-[#0f172a] border border-[#e7e5e4] dark:border-slate-800 rounded-3xl p-8 shadow-sm space-y-6">
           <div className="text-center space-y-2 max-w-lg mx-auto">
-            <div className="w-12 h-12 rounded-full bg-[#0f172a]/10 flex items-center justify-center text-[#0f172a] mx-auto shadow-sm">
+            <div className="w-12 h-12 rounded-full bg-[#0f172a]/10 dark:bg-slate-800/50 flex items-center justify-center text-[#0f172a] mx-auto shadow-sm">
               <Trophy className="w-6 h-6 text-[#d4af37]" />
             </div>
-            <h2 className="text-2xl font-bold font-serif text-stone-800">Bible Wisdom Quizzes</h2>
-            <p className="text-sm text-stone-500">Test your knowledge, explore deep scripture trivia, and learn background histories with detailed study comments.</p>
+            <h2 className="text-2xl font-bold font-serif text-stone-800 dark:text-slate-100">Bible Wisdom Quizzes</h2>
+            <p className="text-sm text-stone-500 dark:text-slate-400">Test your knowledge, explore deep scripture trivia, and learn background histories with detailed study comments.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
             {/* Topic Select */}
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-stone-500 uppercase tracking-wider font-mono">Select Topic</label>
+              <label className="text-xs font-bold text-stone-500 dark:text-slate-400 uppercase tracking-wider font-mono">Select Topic</label>
               <select
                 id="quiz-topic-select"
-                className="w-full p-2.5 bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-stone-400 text-sm font-medium text-stone-700"
+                className="w-full p-2.5 bg-stone-50 dark:bg-slate-900/40 border border-stone-200 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-1 focus:ring-stone-400 text-sm font-medium text-stone-700 dark:text-slate-200"
                 value={selectedTopic}
                 onChange={(e) => setSelectedTopic(e.target.value)}
               >
                 {TOPICS.map(topic => (
-                  <option key={topic} value={topic}>{topic}</option>
+                  <option key={topic} value={topic} className="dark:bg-slate-900">{topic}</option>
                 ))}
               </select>
             </div>
 
             {/* Difficulty Select */}
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-stone-500 uppercase tracking-wider font-mono">Select Difficulty</label>
-              <div className="flex bg-stone-50 p-1 border border-stone-200 rounded-xl gap-1">
+              <label className="text-xs font-bold text-stone-500 dark:text-slate-400 uppercase tracking-wider font-mono">Select Difficulty</label>
+              <div className="flex bg-stone-50 dark:bg-slate-900/40 p-1 border border-stone-200 dark:border-slate-800 rounded-xl gap-1">
                 {DIFFICULTIES.map(diff => (
                   <button
                     id={`quiz-diff-${diff.toLowerCase()}`}
@@ -168,8 +168,8 @@ export default function BibleQuizView() {
                     onClick={() => setSelectedDifficulty(diff)}
                     className={`flex-1 py-1.5 text-xs font-semibold rounded-lg transition-all ${
                       selectedDifficulty === diff
-                        ? 'bg-white text-stone-800 shadow-sm border border-stone-200/50'
-                        : 'text-stone-400 hover:text-stone-600'
+                        ? 'bg-white dark:bg-slate-800 text-stone-800 dark:text-slate-100 shadow-sm border border-stone-200/50'
+                        : 'text-stone-400 dark:text-slate-500 hover:text-stone-600 dark:hover:text-slate-300'
                     }`}
                   >
                     {diff}
@@ -180,8 +180,8 @@ export default function BibleQuizView() {
           </div>
 
           {errorMsg && (
-            <div className="bg-amber-50/50 border border-amber-200 text-xs text-stone-600 p-4 rounded-xl flex items-start gap-2 leading-relaxed">
-              <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+            <div className="bg-amber-50/50 dark:bg-amber-950/10 border border-amber-200 dark:border-amber-900/30 text-xs text-stone-600 dark:text-slate-300 p-4 rounded-xl flex items-start gap-2 leading-relaxed">
+              <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
               <span>{errorMsg}</span>
             </div>
           )}
@@ -190,14 +190,14 @@ export default function BibleQuizView() {
             <button
               id="btn-play-offline-quiz"
               onClick={handleStartOfflineQuiz}
-              className="flex-1 py-3 border border-stone-200 hover:bg-stone-50 text-stone-700 text-sm font-semibold rounded-2xl transition-all cursor-pointer"
+              className="flex-1 py-3 border border-stone-200 dark:border-slate-800 hover:bg-stone-50 dark:hover:bg-slate-800 text-stone-700 dark:text-slate-200 text-sm font-semibold rounded-2xl transition-all cursor-pointer bg-white dark:bg-slate-900"
             >
               Play Starter Offline Quiz
             </button>
             <button
               id="btn-start-ai-quiz"
               onClick={handleGenerateQuiz}
-              className="flex-1 py-3 bg-[#0f172a] hover:bg-slate-800 text-[#d4af37] border border-[#d4af37]/20 text-sm font-semibold rounded-2xl flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer"
+              className="flex-1 py-3 bg-[#0f172a] dark:bg-slate-900 hover:bg-slate-800 dark:hover:bg-slate-850 text-[#d4af37] hover:text-[#f39c12] border border-[#d4af37]/20 text-sm font-semibold rounded-2xl flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer"
             >
               <Sparkles className="w-4 h-4" />
               <span>Generate Dynamic AI Quiz</span>
@@ -208,10 +208,10 @@ export default function BibleQuizView() {
 
       {/* Loading Screen */}
       {loading && (
-        <div className="bg-white border border-[#e7e5e4] rounded-3xl p-12 text-center space-y-4 shadow-sm">
+        <div className="bg-white dark:bg-[#0f172a] border border-[#e7e5e4] dark:border-slate-800 rounded-3xl p-12 text-center space-y-4 shadow-sm">
           <Sparkles className="w-10 h-10 text-[#d4af37] animate-spin mx-auto" />
-          <h3 className="text-xl font-serif font-semibold text-stone-800">Compiling Scripture Questions...</h3>
-          <p className="text-xs text-stone-400 max-w-sm mx-auto leading-relaxed">
+          <h3 className="text-xl font-serif font-semibold text-stone-800 dark:text-slate-200">Compiling Scripture Questions...</h3>
+          <p className="text-xs text-stone-400 dark:text-slate-500 max-w-sm mx-auto leading-relaxed">
             Gemini is selecting relevant verses, designing competitive questions, and formatting historical commentary.
           </p>
         </div>
@@ -219,45 +219,45 @@ export default function BibleQuizView() {
 
       {/* Game Playing view */}
       {currentIndex >= 0 && currentIndex < questions.length && (
-        <div className="bg-white border border-[#e7e5e4] rounded-3xl p-6 sm:p-8 shadow-sm space-y-6 animate-fadeIn">
+        <div className="bg-white dark:bg-[#0f172a] border border-[#e7e5e4] dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6 animate-fadeIn">
           {/* Header Progress and score */}
-          <div className="flex justify-between items-center text-xs font-semibold text-stone-400 font-mono">
+          <div className="flex justify-between items-center text-xs font-semibold text-stone-400 dark:text-slate-500 font-mono">
             <span>QUESTION {currentIndex + 1} OF {questions.length}</span>
             <span>SCORE: {score}/{questions.length}</span>
           </div>
 
           {/* Progress bar */}
-          <div className="w-full bg-stone-100 h-1 rounded-full overflow-hidden">
+          <div className="w-full bg-stone-100 dark:bg-slate-800 h-1 rounded-full overflow-hidden">
             <div 
-              className="bg-[#0f172a] h-full rounded-full transition-all"
+              className="bg-[#0f172a] dark:bg-[#d4af37] h-full rounded-full transition-all"
               style={{ width: `${((currentIndex + 1) / questions.length) * 100}%` }}
             />
           </div>
 
           {/* Question Text */}
-          <h3 className="text-lg sm:text-xl font-serif font-bold text-stone-800 leading-snug">
+          <h3 className="text-lg sm:text-xl font-serif font-bold text-stone-800 dark:text-slate-100 leading-snug">
             {currentQuestionObj.question}
           </h3>
 
           {/* Options List */}
           <div className="grid grid-cols-1 gap-3">
             {currentQuestionObj.options.map((opt, idx) => {
-              let btnClass = "border-stone-200 bg-white text-stone-700 hover:bg-stone-50 hover:border-stone-300";
+              let btnClass = "border-stone-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-stone-700 dark:text-slate-300 hover:bg-stone-50 dark:hover:bg-slate-800/50 hover:border-stone-300 dark:hover:border-slate-700";
               
               if (selectedOption === idx && !hasSubmitted) {
-                btnClass = "border-[#d4af37] bg-[#0f172a]/5 text-stone-800 font-semibold";
+                btnClass = "border-[#d4af37] bg-[#d4af37]/10 dark:bg-[#d4af37]/15 text-stone-800 dark:text-slate-100 font-semibold";
               }
 
               if (hasSubmitted) {
                 if (idx === currentQuestionObj.answerIndex) {
                   // correct choice
-                  btnClass = "border-green-300 bg-green-50 text-green-800 font-semibold";
+                  btnClass = "border-green-300 dark:border-green-800/60 bg-green-50 dark:bg-green-950/20 text-green-800 dark:text-green-300 font-semibold";
                 } else if (selectedOption === idx) {
                   // selected incorrect choice
-                  btnClass = "border-red-300 bg-red-50 text-red-800";
+                  btnClass = "border-red-300 dark:border-red-800/60 bg-red-50 dark:bg-red-950/20 text-red-800 dark:text-red-300";
                 } else {
                   // non-selected incorrect choice
-                  btnClass = "border-stone-100 bg-white text-stone-400 opacity-60";
+                  btnClass = "border-stone-100 dark:border-slate-800/40 bg-white dark:bg-slate-900 text-stone-400 dark:text-slate-500 opacity-60";
                 }
               }
 
@@ -267,14 +267,14 @@ export default function BibleQuizView() {
                   key={idx}
                   onClick={() => !hasSubmitted && setSelectedOption(idx)}
                   disabled={hasSubmitted}
-                  className={`w-full text-left p-4 border rounded-xl text-sm transition-all flex items-center justify-between ${btnClass}`}
+                  className={`w-full text-left p-4 border rounded-xl text-sm transition-all flex items-center justify-between cursor-pointer ${btnClass}`}
                 >
                   <span>{opt}</span>
                   {hasSubmitted && idx === currentQuestionObj.answerIndex && (
-                    <CheckCircle className="w-4 h-4 text-green-600" />
+                    <CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
                   )}
                   {hasSubmitted && selectedOption === idx && idx !== currentQuestionObj.answerIndex && (
-                    <XCircle className="w-4 h-4 text-red-600" />
+                    <XCircle className="w-4 h-4 text-red-600 dark:text-red-400" />
                   )}
                 </button>
               );
@@ -321,24 +321,24 @@ export default function BibleQuizView() {
 
       {/* Quiz Finished Summary View */}
       {currentIndex >= questions.length && (
-        <div className="bg-white border border-[#e7e5e4] rounded-3xl p-8 text-center shadow-sm space-y-6 animate-fadeIn">
-          <div className="w-16 h-16 rounded-full bg-[#0f172a]/10 flex items-center justify-center text-[#0f172a] mx-auto shadow-sm">
+        <div className="bg-white dark:bg-[#0f172a] border border-[#e7e5e4] dark:border-slate-800 rounded-3xl p-8 text-center shadow-sm space-y-6 animate-fadeIn">
+          <div className="w-16 h-16 rounded-full bg-[#0f172a]/10 dark:bg-slate-800/50 flex items-center justify-center text-[#0f172a] mx-auto shadow-sm">
             <Trophy className="w-8 h-8 text-[#d4af37]" />
           </div>
 
           <div className="space-y-1">
-            <h3 className="text-2xl font-bold font-serif text-stone-800">Quiz Completed!</h3>
-            <p className="text-sm text-stone-500">Let's see how well you did with these Scripture questions.</p>
+            <h3 className="text-2xl font-bold font-serif text-stone-800 dark:text-slate-100">Quiz Completed!</h3>
+            <p className="text-sm text-stone-500 dark:text-slate-400">Let's see how well you did with these Scripture questions.</p>
           </div>
 
           {/* Score display */}
-          <div className="bg-[#fafaf9] border border-stone-100 py-6 px-12 rounded-2xl max-w-xs mx-auto">
-            <span className="block text-4xl font-extrabold text-[#0f172a] font-mono">{score} / {questions.length}</span>
-            <span className="text-xs text-stone-400 font-mono uppercase tracking-wider">Correct Answers</span>
+          <div className="bg-[#fafaf9] dark:bg-slate-900 border border-stone-100 dark:border-slate-800 py-6 px-12 rounded-2xl max-w-xs mx-auto">
+            <span className="block text-4xl font-extrabold text-[#0f172a] dark:text-[#d4af37] font-mono">{score} / {questions.length}</span>
+            <span className="text-xs text-stone-400 dark:text-slate-500 font-mono uppercase tracking-wider">Correct Answers</span>
           </div>
 
           {/* Inspirational advice */}
-          <p className="text-sm text-stone-600 max-w-sm mx-auto italic font-serif">
+          <p className="text-sm text-stone-600 dark:text-slate-300 max-w-sm mx-auto italic font-serif">
             {score === questions.length 
               ? "Marvelous! You have shown a flawless comprehension of biblical historical and covenant scriptures! Keep studying!"
               : score >= questions.length / 2 
@@ -350,7 +350,7 @@ export default function BibleQuizView() {
             <button
               id="btn-quiz-retry"
               onClick={handleReset}
-              className="px-5 py-2.5 border border-stone-200 hover:bg-stone-50 text-stone-600 text-xs font-bold rounded-xl flex items-center gap-1 transition-all"
+              className="px-5 py-2.5 border border-stone-200 dark:border-slate-800 hover:bg-stone-50 dark:hover:bg-slate-800 text-stone-600 dark:text-slate-200 text-xs font-bold rounded-xl flex items-center gap-1 transition-all bg-white dark:bg-slate-900 cursor-pointer"
             >
               <RotateCcw className="w-3.5 h-3.5" />
               <span>Retry / Other Topics</span>

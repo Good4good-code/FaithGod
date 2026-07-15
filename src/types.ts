@@ -51,3 +51,14 @@ export interface QuizQuestion {
   answerIndex: number;
   explanation: string;
 }
+
+export interface Highlight {
+  id: string;
+  userId: string;
+  bookId: string;
+  bookName: string;
+  chapter: number;
+  verse: number;
+  color: 'yellow' | 'green' | 'blue' | 'pink';
+  createdAt: string;
+}
